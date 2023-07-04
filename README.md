@@ -14,6 +14,7 @@ the architecture of entity-verse is centered around four main sections:
 3. create a _entity context_ with an _entity kernel_
    - a worker context: all entities are living in a worker thread 
    - a direct/ main document context
+   - but don't forget to _sync_ the states
 4. kernel entity routing
    - an entity is not an entity component, but an entity can consists of multiple components
    - entity component object creation based on _tokens_
