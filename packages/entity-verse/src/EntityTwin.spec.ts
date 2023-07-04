@@ -1,8 +1,8 @@
 import {EntityTwin} from './EntityTwin';
-import {EntityTwinContext} from './EntityTwinContext';
+import {EntityViewContext} from './EntityViewContext';
 
 describe('EntityProxy', () => {
-  const ctx = EntityTwinContext.get();
+  const ctx = EntityViewContext.get();
 
   afterAll(() => {
     ctx.clear();
@@ -31,7 +31,7 @@ describe('EntityProxy', () => {
   it('should add entity as child (constructor)', () => {
     const parent = new EntityTwin('test');
     const child = new EntityTwin('test', parent);
-    const ctx = EntityTwinContext.get();
+    const ctx = EntityViewContext.get();
 
     expect(ctx.hasEntity(parent)).toBeTruthy();
     expect(ctx.hasEntity(child)).toBeTruthy();

@@ -1,5 +1,5 @@
 import {Eventize, Priority} from '@spearwolf/eventize';
-import {EntityTwinContext} from './EntityTwinContext';
+import {EntityViewContext} from './EntityViewContext';
 import {EntitiesSyncEvent} from './types';
 
 export class EntitiesLink extends Eventize {
@@ -11,8 +11,8 @@ export class EntitiesLink extends Eventize {
     return this.#namespace;
   }
 
-  get context(): EntityTwinContext {
-    return EntityTwinContext.get(this.#namespace);
+  get context(): EntityViewContext {
+    return EntityViewContext.get(this.#namespace);
   }
 
   #readyPromise: Promise<EntitiesLink>;
@@ -33,7 +33,7 @@ export class EntitiesLink extends Eventize {
   constructor(namespace?: string | symbol) {
     super();
 
-    this.#namespace = namespace ?? EntityTwinContext.GlobalNS;
+    this.#namespace = namespace ?? EntityViewContext.GlobalNS;
 
     this.#readyPromise = new Promise<EntitiesLink>((resolve) => {
       this.#readyResolve = resolve;

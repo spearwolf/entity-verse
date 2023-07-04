@@ -1,16 +1,16 @@
 import {EntityTwin} from './EntityTwin';
-import {EntityTwinContext} from './EntityTwinContext';
+import {EntityViewContext} from './EntityViewContext';
 import {EntityChangeType} from './types';
 
-describe('EntityTwinContext', () => {
-  const ctx = EntityTwinContext.get();
+describe('EntityViewContext', () => {
+  const ctx = EntityViewContext.get();
 
   afterAll(() => {
     ctx.clear();
   });
 
   it('should be defined', () => {
-    expect(EntityTwinContext).toBeDefined();
+    expect(EntityViewContext).toBeDefined();
   });
 
   it('should insert create-entity and destroy-entites in change trail', () => {

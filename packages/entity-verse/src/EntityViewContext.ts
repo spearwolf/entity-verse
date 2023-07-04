@@ -11,21 +11,21 @@ interface EntityEntry {
 
 declare global {
   // eslint-disable-next-line no-var
-  var __entityProxyContext: Map<string | symbol, EntityTwinContext> | undefined;
+  var __entityProxyContext: Map<string | symbol, EntityViewContext> | undefined;
 }
 
-export class EntityTwinContext {
+export class EntityViewContext {
   static GlobalNS = Symbol.for('globalEntities');
 
-  static get(namespace?: string | symbol): EntityTwinContext {
+  static get(namespace?: string | symbol): EntityViewContext {
     if (globalThis.__entityProxyContext === undefined) {
-      globalThis.__entityProxyContext = new Map<string | symbol, EntityTwinContext>();
+      globalThis.__entityProxyContext = new Map<string | symbol, EntityViewContext>();
     }
-    const ns = namespace ?? EntityTwinContext.GlobalNS;
+    const ns = namespace ?? EntityViewContext.GlobalNS;
     if (globalThis.__entityProxyContext.has(ns)) {
       return globalThis.__entityProxyContext.get(ns)!;
     } else {
-      const ctx = new EntityTwinContext();
+      const ctx = new EntityViewContext();
       globalThis.__entityProxyContext.set(ns, ctx);
       return ctx;
     }

@@ -1,4 +1,4 @@
-import {EntityTwinContext} from './EntityTwinContext';
+import {EntityViewContext} from './EntityViewContext';
 import {generateUUID} from './generateUUID';
 
 /**
@@ -15,7 +15,7 @@ export class EntityTwin {
   #namespace?: string | symbol;
   #order = 0;
 
-  #context: EntityTwinContext;
+  #context: EntityViewContext;
   #parent?: EntityTwin;
 
   get uuid() {
@@ -62,7 +62,7 @@ export class EntityTwin {
     this.#order = order;
     this.#namespace = namespace;
 
-    this.#context = EntityTwinContext.get(this.#namespace);
+    this.#context = EntityViewContext.get(this.#namespace);
     this.#context.addEntity(this);
   }
 
