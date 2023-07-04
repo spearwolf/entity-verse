@@ -1,10 +1,10 @@
 import {EntityChanges} from './EntityChanges';
-import {EntityTwin} from './EntityTwin';
+import {EntityView} from './EntityView';
 import {removeFrom} from './array-utils';
 import {EntityChangeEntryType, EntityChangeTrailPhase} from './types';
 
 interface EntityEntry {
-  entity: EntityTwin;
+  entity: EntityView;
   children: string[]; // we use an Array here and not a Set, because we want to keep the insertion order
   changes: EntityChanges;
 }
@@ -36,7 +36,7 @@ export class EntityViewContext {
 
   #removedEntityChanges: EntityChanges[] = [];
 
-  addEntity(entity: EntityTwin) {
+  addEntity(entity: EntityView) {
     if (this.hasEntity(entity)) {
       throw new Error(`Entity with uuid:${entity.uuid} already exists`);
     }
@@ -54,15 +54,15 @@ export class EntityViewContext {
     }
   }
 
-  hasEntity(entity: EntityTwin) {
+  hasEntity(entity: EntityView) {
     return this.#entities.has(entity.uuid);
   }
 
-  isRootEntity(entity: EntityTwin) {
+  isRootEntity(entity: EntityView) {
     return this.#rootEntities.includes(entity.uuid);
   }
 
-  removeEntity(entity: EntityTwin) {
+  removeEntity(entity: EntityView) {
     if (this.hasEntity(entity)) {
       const entry = this.#entities.get(entity.uuid)!;
 
@@ -76,7 +76,7 @@ export class EntityViewContext {
     }
   }
 
-  removeChildFromParent(childUuid: string, parent: EntityTwin) {
+  removeChildFromParent(childUuid: string, parent: EntityView) {
     if (this.hasEntity(parent)) {
       const childEntry = this.#entities.get(childUuid)!;
       const entry = this.#entities.get(parent.uuid)!;
@@ -89,7 +89,7 @@ export class EntityViewContext {
     }
   }
 
-  isChildOf(child: EntityTwin, parent: EntityTwin) {
+  isChildOf(child: EntityView, parent: EntityView) {
     if (this.hasEntity(parent)) {
       const entry = this.#entities.get(parent.uuid)!;
       return entry.children.includes(child.uuid);
@@ -97,7 +97,7 @@ export class EntityViewContext {
     return false;
   }
 
-  addToChildren(parent: EntityTwin, child: EntityTwin) {
+  addToChildren(parent: EntityView, child: EntityView) {
     const entry = this.#entities.get(parent.uuid);
     if (entry) {
       this.#appendToOrdered(child, entry.children);
@@ -116,15 +116,15 @@ export class EntityViewContext {
     }
   }
 
-  setProperty<T = unknown>(entity: EntityTwin, propKey: string, value: T, isEqual?: (a: T, b: T) => boolean) {
+  setProperty<T = unknown>(entity: EntityView, propKey: string, value: T, isEqual?: (a: T, b: T) => boolean) {
     this.#entities.get(entity.uuid)?.changes.changeProperty(propKey, value, isEqual);
   }
 
-  removeProperty(entity: EntityTwin, propKey: string) {
+  removeProperty(entity: EntityView, propKey: string) {
     this.#entities.get(entity.uuid)?.changes.removeProperty(propKey);
   }
 
-  changeOrder(entity: EntityTwin) {
+  changeOrder(entity: EntityView) {
     if (entity.parent) {
       const parentEntry = this.#entities.get(entity.parent.uuid)!;
       removeFrom(parentEntry.children, entity.uuid);
@@ -191,7 +191,7 @@ export class EntityViewContext {
     return path;
   }
 
-  #appendToOrdered(entity: EntityTwin, childUuids: string[]) {
+  #appendToOrdered(entity: EntityView, childUuids: string[]) {
     if (childUuids.length === 0) {
       childUuids.push(entity.uuid);
       return;
@@ -202,7 +202,7 @@ export class EntityViewContext {
     }
 
     const len = childUuids.length;
-    const childEntities = new Array<EntityTwin>(len);
+    const childEntities = new Array<EntityView>(len);
 
     childEntities[0] = this.#entities.get(childUuids[0])!.entity;
 

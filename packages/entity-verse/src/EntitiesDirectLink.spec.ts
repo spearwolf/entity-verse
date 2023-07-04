@@ -3,7 +3,7 @@ import {EntitiesDirectLink} from './EntitiesDirectLink';
 import {EntitiesLink} from './EntitiesLink';
 import {Entity} from './Entity';
 import {EntityRegistry} from './EntityRegistry';
-import {EntityTwin} from './EntityTwin';
+import {EntityView} from './EntityView';
 import {EntityViewContext} from './EntityViewContext';
 import {EntityUplink} from './EntityUplink';
 import {OnCreate, OnInit, OnRemoveFromParent} from './events';
@@ -45,8 +45,8 @@ describe('EntitiesDirectLink', () => {
   it('should sync', async () => {
     const directLink = new EntitiesDirectLink().start();
 
-    const a = new EntityTwin('a');
-    const b = new EntityTwin('b', a);
+    const a = new EntityView('a');
+    const b = new EntityView('b', a);
 
     a.setProperty('foo', 'bar');
     b.setProperty('xyz', 123);
@@ -64,8 +64,8 @@ describe('EntitiesDirectLink', () => {
   it('should create entities within kernel', async () => {
     const directLink = new EntitiesDirectLink().start();
 
-    const a = new EntityTwin('a');
-    const b = new EntityTwin('b', a);
+    const a = new EntityView('a');
+    const b = new EntityView('b', a);
 
     a.setProperty('foo', 'bar');
     b.setProperty('xyz', 123);
@@ -94,7 +94,7 @@ describe('EntitiesDirectLink', () => {
       }
     }
 
-    const c = new EntityTwin('c', a, -1);
+    const c = new EntityView('c', a, -1);
 
     await directLink.sync();
 
@@ -140,7 +140,7 @@ describe('EntitiesDirectLink', () => {
       }
     }
 
-    const a = new EntityTwin('a');
+    const a = new EntityView('a');
     a.setProperty('foo', 'bar');
 
     await directLink.sync();

@@ -1,4 +1,4 @@
-import {EntityTwin} from './EntityTwin';
+import {EntityView} from './EntityView';
 import {EntityViewContext} from './EntityViewContext';
 
 describe('EntityProxy', () => {
@@ -9,11 +9,11 @@ describe('EntityProxy', () => {
   });
 
   it('should be defined', () => {
-    expect(EntityTwin).toBeDefined();
+    expect(EntityView).toBeDefined();
   });
 
   it('should create new entity', () => {
-    const entity = new EntityTwin('test');
+    const entity = new EntityView('test');
     expect(entity.uuid).toBeDefined();
     expect(entity.token).toBe('test');
     expect(entity.parent).toBeUndefined();
@@ -22,15 +22,15 @@ describe('EntityProxy', () => {
   });
 
   it('should destroy entity', () => {
-    const entity = new EntityTwin('test');
+    const entity = new EntityView('test');
     expect(ctx.hasEntity(entity)).toBeTruthy();
     entity.destroy();
     expect(ctx.hasEntity(entity)).toBeFalsy();
   });
 
   it('should add entity as child (constructor)', () => {
-    const parent = new EntityTwin('test');
-    const child = new EntityTwin('test', parent);
+    const parent = new EntityView('test');
+    const child = new EntityView('test', parent);
     const ctx = EntityViewContext.get();
 
     expect(ctx.hasEntity(parent)).toBeTruthy();
@@ -40,8 +40,8 @@ describe('EntityProxy', () => {
   });
 
   it('should add entity as child (addChild)', () => {
-    const parent = new EntityTwin('test');
-    const child = new EntityTwin('test');
+    const parent = new EntityView('test');
+    const child = new EntityView('test');
 
     expect(ctx.hasEntity(parent)).toBeTruthy();
     expect(ctx.hasEntity(child)).toBeTruthy();
@@ -55,8 +55,8 @@ describe('EntityProxy', () => {
   });
 
   it('should remove from parent', () => {
-    const parent = new EntityTwin('test');
-    const child = new EntityTwin('test', parent);
+    const parent = new EntityView('test');
+    const child = new EntityView('test', parent);
 
     expect(ctx.isChildOf(child, parent)).toBeTruthy();
     expect(ctx.isRootEntity(parent)).toBeTruthy();
@@ -69,9 +69,9 @@ describe('EntityProxy', () => {
   });
 
   it('should set parent', () => {
-    const a = new EntityTwin('test');
-    const b = new EntityTwin('test', a);
-    const c = new EntityTwin('test');
+    const a = new EntityView('test');
+    const b = new EntityView('test', a);
+    const c = new EntityView('test');
 
     expect(ctx.isChildOf(b, a)).toBeTruthy();
     expect(ctx.isChildOf(b, c)).toBeFalsy();

@@ -1,4 +1,4 @@
-import {EntityTwin} from './EntityTwin';
+import {EntityView} from './EntityView';
 import {EntityViewContext} from './EntityViewContext';
 import {EntityChangeType} from './types';
 
@@ -14,8 +14,8 @@ describe('EntityViewContext', () => {
   });
 
   it('should insert create-entity and destroy-entites in change trail', () => {
-    const a = new EntityTwin('a');
-    const b = new EntityTwin('b', a);
+    const a = new EntityView('a');
+    const b = new EntityView('b', a);
 
     let changes = ctx.buildChangeTrails();
 
@@ -37,8 +37,8 @@ describe('EntityViewContext', () => {
   });
 
   it('should insert change-properties in change trail', () => {
-    const a = new EntityTwin('a');
-    const b = new EntityTwin('b', a);
+    const a = new EntityView('a');
+    const b = new EntityView('b', a);
 
     a.setProperty('foo', 'bar');
     a.setProperty('plah', 42);
@@ -74,10 +74,10 @@ describe('EntityViewContext', () => {
   });
 
   it('should insert update-orders in change trail', () => {
-    const a = new EntityTwin('a', undefined, 100);
-    const b = new EntityTwin('b', a);
-    const c = new EntityTwin('c', a, 3);
-    const d = new EntityTwin('d', a, 2);
+    const a = new EntityView('a', undefined, 100);
+    const b = new EntityView('b', a);
+    const c = new EntityView('c', a, 3);
+    const d = new EntityView('d', a, 2);
 
     let changes = ctx.buildChangeTrails();
 
