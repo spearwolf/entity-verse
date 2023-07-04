@@ -8,8 +8,8 @@
 
 the architecture of entity-verse is centered around four main sections:
 
-1. _entity components_ (the domain model)
-2. _entity frontends_ (the view)
+1. _entity components_ (your domain model)
+2. _entity view objects_
    - bring your own framework: html, react, angular .. it's up to you
 3. create a _entity context_ with an _entity kernel_
    - a worker context: all entities are living in a worker thread 
@@ -33,14 +33,41 @@ an _entity component_ has the following properties:
 
 ![an entity component](./docs/images/an-entity-component.png)
 
-### Entity Frontends
+### Entity View
 
-In order to use these entities, the user must create a _frontend_ for each entity. These frontends act as remote controllers for the actual entity.
+In order to use these entities, the user must create a _view instance_ for each entity. These frontends act as remote controllers for the actual entity.
 
-![use entity frontends](./docs/images/use-entity-frontends.png)
+```html
+<entity-view token="has-a-name" name="foo">
+   <entity-view id="calc" token="a-calc" a=100 b=1></entity-view>
+</entity-view>
 
-> NOTE: the creation of frontends using the javascript api is only an intermediate step. the goal is to provide a web component based api for this purpose, or react components.
+<script>
+  const el = document.getElementById('calc');
+  
+  el.addEventListener('result', (e) => {
+     console.log('result is', e.detail);
+  });
+  
+  el.dispatchEvent(new CustomEvent('calc'));
+</script>
+```
 
-#### HTML Custom Elements API
+If you do not want to use the predefined html elements (web components) which comes with this library, you can easily build your own view components with the javascript api:
 
-![use entity frontends in html](./docs/images/use-entity-frontends-html.png)
+```js
+const nameGiver = new EntityView({token: 'has-a-name'});
+nameGiver.name = 'foo';
+
+const myCalc = new EntityView([token: 'a-calc']);
+myCalc.setProperty('a', 100);
+myCalc.setProperty('b', 1);
+
+nameGiver.addChild(myCalc);
+
+myCalc.on('result', (result) => {
+   console.log('result is', result);
+})
+
+myCalc.emit('calc');
+```
