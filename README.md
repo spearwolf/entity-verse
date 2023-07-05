@@ -62,7 +62,7 @@ If you do not want to use the predefined html elements (web components) which co
 
 ```js
 const nameGiver = new EntityView({token: 'has-a-name'});
-nameGiver.name = 'foo';
+nameGiver.setProperty('name', 'foo');
 
 const myCalc = new EntityView([token: 'a-calc']);
 myCalc.setProperty('a', 100);
