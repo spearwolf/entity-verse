@@ -21,7 +21,7 @@ the architecture of entity-verse is centered around four main sections:
    - [x] an entity is not an entity component, but an entity can consists of multiple components
    - [x] entity component object creation based on _tokens_
 
-[for a detailed description of what an entity is, see here](./docs/Entity.md)
+[👉 for a detailed description of what an entity is, see here](./docs/Entity.md)
 
 ### Entity Components
 
