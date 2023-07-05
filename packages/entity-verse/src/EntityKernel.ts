@@ -5,6 +5,12 @@ import {OnCreate, OnDestroy, OnInit} from './events';
 import {EntitiesSyncEvent, EntityChangeEntryType, EntityChangeType} from './types';
 import {EntityRegistry, getDefaultRegistry} from './EntityRegistry';
 
+/**
+ * The _entity kernel_ is the central hub for all _entity uplinks_.
+ *
+ * The entities are created, destroyed, parented, etc. based on the entity _view change log_.
+ * The entity components are created based on the _tokens_ and the _entity registry_.
+ */
 export class EntityKernel extends Eventize {
   registry: EntityRegistry;
 

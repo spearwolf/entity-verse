@@ -1,17 +1,17 @@
 import {EventizeApi} from '@spearwolf/eventize';
-import {EntitiesDirectLink} from './EntitiesDirectLink';
-import {EntitiesLink} from './EntitiesLink';
 import {Entity} from './Entity';
+import {EntityContext} from './EntityContext';
+import {EntityLocalContext} from './EntityLocalContext';
 import {EntityRegistry} from './EntityRegistry';
+import {EntityUplink} from './EntityUplink';
 import {EntityView} from './EntityView';
 import {EntityViewSpace} from './EntityViewSpace';
-import {EntityUplink} from './EntityUplink';
 import {OnCreate, OnInit, OnRemoveFromParent} from './events';
 import {EntitiesSyncEvent, EntityChangeType} from './types';
 
-const nextSyncEvent = (link: EntitiesLink): Promise<EntitiesSyncEvent> =>
+const nextSyncEvent = (link: EntityContext): Promise<EntitiesSyncEvent> =>
   new Promise((resolve) => {
-    link.once(EntitiesLink.OnSync, resolve);
+    link.once(EntityContext.OnSync, resolve);
   });
 
 const waitForNext = (obj: EventizeApi, event: string | symbol): Promise<unknown[]> =>
@@ -19,31 +19,31 @@ const waitForNext = (obj: EventizeApi, event: string | symbol): Promise<unknown[
     obj.once(event, (...args: unknown[]) => resolve(args));
   });
 
-describe('EntitiesDirectLink', () => {
-  const ctx = EntityViewSpace.get();
+describe('EntityLocalContext', () => {
+  const viewSpace = EntityViewSpace.get();
 
   afterAll(() => {
-    ctx.clear();
+    viewSpace.clear();
   });
 
   it('should be defined', () => {
-    expect(EntitiesDirectLink).toBeDefined();
+    expect(EntityLocalContext).toBeDefined();
   });
 
   it('should start', async () => {
-    const link = new EntitiesDirectLink();
+    const localCtx = new EntityLocalContext();
 
-    expect(link.isReady).toBe(false);
+    expect(localCtx.isReady).toBe(false);
 
-    link.start();
+    localCtx.start();
 
-    expect(link.isReady).toBe(true);
+    expect(localCtx.isReady).toBe(true);
 
-    await expect(link.ready).resolves.toBe(link);
+    await expect(localCtx.ready).resolves.toBe(localCtx);
   });
 
   it('should sync', async () => {
-    const directLink = new EntitiesDirectLink().start();
+    const localCtx = new EntityLocalContext().start();
 
     const a = new EntityView('a');
     const b = new EntityView('b', a);
@@ -51,9 +51,9 @@ describe('EntitiesDirectLink', () => {
     a.setProperty('foo', 'bar');
     b.setProperty('xyz', 123);
 
-    directLink.sync();
+    localCtx.sync();
 
-    const event = await nextSyncEvent(directLink);
+    const event = await nextSyncEvent(localCtx);
 
     expect(event.changeTrail).toEqual([
       {type: EntityChangeType.CreateEntity, token: 'a', uuid: a.uuid, properties: [['foo', 'bar']]},
@@ -62,7 +62,7 @@ describe('EntitiesDirectLink', () => {
   });
 
   it('should create entities within kernel', async () => {
-    const directLink = new EntitiesDirectLink().start();
+    const localCtx = new EntityLocalContext().start();
 
     const a = new EntityView('a');
     const b = new EntityView('b', a);
@@ -70,10 +70,10 @@ describe('EntitiesDirectLink', () => {
     a.setProperty('foo', 'bar');
     b.setProperty('xyz', 123);
 
-    await directLink.sync();
+    await localCtx.sync();
 
-    const aa = directLink.kernel.getEntity(a.uuid);
-    const bb = directLink.kernel.getEntity(b.uuid);
+    const aa = localCtx.kernel.getEntity(a.uuid);
+    const bb = localCtx.kernel.getEntity(b.uuid);
 
     expect(aa).toBeDefined();
     expect(aa.getProperty('foo')).toBe('bar');
@@ -87,7 +87,7 @@ describe('EntitiesDirectLink', () => {
 
     const onRemoveFromParent = jest.fn();
 
-    @Entity({registry: directLink.kernel.registry, token: 'c'})
+    @Entity({registry: localCtx.kernel.registry, token: 'c'})
     class EntityCcc implements OnRemoveFromParent {
       [OnRemoveFromParent](_uplink: EntityUplink) {
         onRemoveFromParent(this);
@@ -96,9 +96,9 @@ describe('EntitiesDirectLink', () => {
 
     const c = new EntityView('c', a, -1);
 
-    await directLink.sync();
+    await localCtx.sync();
 
-    const cc = directLink.kernel.getEntity(c.uuid);
+    const cc = localCtx.kernel.getEntity(c.uuid);
 
     expect(aa.children).toHaveLength(2);
     expect(aa.children[0]).toBe(cc);
@@ -110,7 +110,7 @@ describe('EntitiesDirectLink', () => {
 
     c.removeFromParent();
 
-    await directLink.sync();
+    await localCtx.sync();
 
     expect(aa.children).toHaveLength(1);
     expect(cc.parent).toBeUndefined();
@@ -122,10 +122,10 @@ describe('EntitiesDirectLink', () => {
   });
 
   it('should create entity components', async () => {
-    const directLink = new EntitiesDirectLink().start();
+    const localCtx = new EntityLocalContext().start();
     const registry = new EntityRegistry();
 
-    directLink.kernel.registry = registry;
+    localCtx.kernel.registry = registry;
 
     const onCreateMock = jest.fn();
     const onInitMock = jest.fn();
@@ -143,9 +143,9 @@ describe('EntitiesDirectLink', () => {
     const a = new EntityView('a');
     a.setProperty('foo', 'bar');
 
-    await directLink.sync();
+    await localCtx.sync();
 
-    const aa = directLink.kernel.getEntity(a.uuid);
+    const aa = localCtx.kernel.getEntity(a.uuid);
 
     expect(aa).toBeDefined();
     expect(aa.getProperty('foo')).toBe('bar');

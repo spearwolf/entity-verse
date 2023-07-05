@@ -1,5 +1,5 @@
-export * from './EntitiesDirectLink';
-export * from './EntitiesLink';
+export * from './EntityLocalContext';
+export * from './EntityContext';
 export * from './Entity';
 export * from './EntityRegistry';
 export * from './EntityView';
