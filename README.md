@@ -27,7 +27,7 @@ the architecture of entity-verse is centered around four main sections:
 
 **entity-verse** provides the user with a decorator based api that can be used to create _entity components_.
 an _entity component_ has the following properties:
-- there are any number of initial properties, aka `InProp`'s
+- there are any number of input properties, aka `InProp`'s
 - components can react to events and can trigger events themselves
 - entity components have a _context_: components have a parent-child relationship to each other and thus live in a classical tree-like hierarchy
   - a compoennt can be assigned to a parent component (but does not have to)
