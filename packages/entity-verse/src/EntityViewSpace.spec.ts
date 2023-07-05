@@ -1,16 +1,16 @@
 import {EntityView} from './EntityView';
-import {EntityViewContext} from './EntityViewContext';
+import {EntityViewSpace} from './EntityViewSpace';
 import {EntityChangeType} from './types';
 
-describe('EntityViewContext', () => {
-  const ctx = EntityViewContext.get();
+describe('EntityViewSpace', () => {
+  const ctx = EntityViewSpace.get();
 
   afterAll(() => {
     ctx.clear();
   });
 
   it('should be defined', () => {
-    expect(EntityViewContext).toBeDefined();
+    expect(EntityViewSpace).toBeDefined();
   });
 
   it('should insert create-entity and destroy-entites in change trail', () => {

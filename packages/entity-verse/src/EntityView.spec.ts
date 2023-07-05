@@ -1,8 +1,8 @@
 import {EntityView} from './EntityView';
-import {EntityViewContext} from './EntityViewContext';
+import {EntityViewSpace} from './EntityViewSpace';
 
 describe('EntityProxy', () => {
-  const ctx = EntityViewContext.get();
+  const ctx = EntityViewSpace.get();
 
   afterAll(() => {
     ctx.clear();
@@ -31,7 +31,7 @@ describe('EntityProxy', () => {
   it('should add entity as child (constructor)', () => {
     const parent = new EntityView('test');
     const child = new EntityView('test', parent);
-    const ctx = EntityViewContext.get();
+    const ctx = EntityViewSpace.get();
 
     expect(ctx.hasEntity(parent)).toBeTruthy();
     expect(ctx.hasEntity(child)).toBeTruthy();

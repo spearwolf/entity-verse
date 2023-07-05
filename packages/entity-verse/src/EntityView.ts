@@ -1,4 +1,4 @@
-import {EntityViewContext} from './EntityViewContext';
+import {EntityViewSpace} from './EntityViewSpace';
 import {generateUUID} from './generateUUID';
 
 /**
@@ -15,7 +15,7 @@ export class EntityView {
   #namespace?: string | symbol;
   #order = 0;
 
-  #context: EntityViewContext;
+  #context: EntityViewSpace;
   #parent?: EntityView;
 
   get uuid() {
@@ -62,7 +62,7 @@ export class EntityView {
     this.#order = order;
     this.#namespace = namespace;
 
-    this.#context = EntityViewContext.get(this.#namespace);
+    this.#context = EntityViewSpace.get(this.#namespace);
     this.#context.addEntity(this);
   }
 

@@ -4,7 +4,7 @@ import {EntitiesLink} from './EntitiesLink';
 import {Entity} from './Entity';
 import {EntityRegistry} from './EntityRegistry';
 import {EntityView} from './EntityView';
-import {EntityViewContext} from './EntityViewContext';
+import {EntityViewSpace} from './EntityViewSpace';
 import {EntityUplink} from './EntityUplink';
 import {OnCreate, OnInit, OnRemoveFromParent} from './events';
 import {EntitiesSyncEvent, EntityChangeType} from './types';
@@ -20,7 +20,7 @@ const waitForNext = (obj: EventizeApi, event: string | symbol): Promise<unknown[
   });
 
 describe('EntitiesDirectLink', () => {
-  const ctx = EntityViewContext.get();
+  const ctx = EntityViewSpace.get();
 
   afterAll(() => {
     ctx.clear();

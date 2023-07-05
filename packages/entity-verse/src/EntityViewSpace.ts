@@ -3,7 +3,7 @@ import {EntityView} from './EntityView';
 import {removeFrom} from './array-utils';
 import {EntityChangeEntryType, EntityChangeTrailPhase} from './types';
 
-interface EntityEntry {
+interface ViewInstance {
   entity: EntityView;
   children: string[]; // we use an Array here and not a Set, because we want to keep the insertion order
   changes: EntityChanges;
@@ -11,27 +11,27 @@ interface EntityEntry {
 
 declare global {
   // eslint-disable-next-line no-var
-  var __entityProxyContext: Map<string | symbol, EntityViewContext> | undefined;
+  var __entityProxyContext: Map<string | symbol, EntityViewSpace> | undefined;
 }
 
-export class EntityViewContext {
+export class EntityViewSpace {
   static GlobalNS = Symbol.for('globalEntities');
 
-  static get(namespace?: string | symbol): EntityViewContext {
+  static get(namespace?: string | symbol): EntityViewSpace {
     if (globalThis.__entityProxyContext === undefined) {
-      globalThis.__entityProxyContext = new Map<string | symbol, EntityViewContext>();
+      globalThis.__entityProxyContext = new Map<string | symbol, EntityViewSpace>();
     }
-    const ns = namespace ?? EntityViewContext.GlobalNS;
+    const ns = namespace ?? EntityViewSpace.GlobalNS;
     if (globalThis.__entityProxyContext.has(ns)) {
       return globalThis.__entityProxyContext.get(ns)!;
     } else {
-      const ctx = new EntityViewContext();
+      const ctx = new EntityViewSpace();
       globalThis.__entityProxyContext.set(ns, ctx);
       return ctx;
     }
   }
 
-  #entities: Map<string, EntityEntry> = new Map();
+  #entities: Map<string, ViewInstance> = new Map();
   #rootEntities: string[] = []; // we use an Array here and not a Set, because we want to keep the insertion order
 
   #removedEntityChanges: EntityChanges[] = [];
