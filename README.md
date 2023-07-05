@@ -8,16 +8,18 @@
 
 the architecture of entity-verse is centered around four main sections:
 
-1. _entity components_ (your domain model)
-2. _entity view objects_
-   - bring your own framework: html, react, angular .. it's up to you
-3. create a _entity context_ with an _entity kernel_
-   - a worker context: all entities are living in a worker thread 
-   - a direct/ main document context
-   - but don't forget to _sync_ the states
-4. kernel entity routing
-   - an entity is not an entity component, but an entity can consists of multiple components
-   - entity component object creation based on _tokens_
+1. [x] _entity components_ (your domain model)
+2. [ ] _entity view objects_
+   - [x] _javascript api_: bring your own framework: html, react, angular .. it's up to you
+   - [ ] ready to use _web components api_
+   - [ ] ready to use _react api_
+3. [ ] create a _entity context_ with an _entity kernel_
+   - [ ]a worker context: all entities are living in a worker thread 
+   - [x] a direct/ main document context
+   - [x] but don't forget to _sync_ the states
+4. [ ] kernel entity routing
+   - [x] an entity is not an entity component, but an entity can consists of multiple components
+   - [x] entity component object creation based on _tokens_
 
 ### Entity Components
 
