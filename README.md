@@ -14,7 +14,7 @@ the architecture of entity-verse is centered around four main sections:
    - [ ] ready to use _web components api_
    - [ ] ready to use _react api_
 3. [ ] create a _entity context_ with an _entity kernel_
-   - [ ]a worker context: all entities are living in a worker thread 
+   - [ ] a worker context: all entities are living in a worker thread 
    - [x] a direct/ main document context
    - [x] but don't forget to _sync_ the states
 4. [ ] kernel entity routing
