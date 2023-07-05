@@ -15,7 +15,7 @@ export class EntityView {
   #namespace?: string | symbol;
   #order = 0;
 
-  #context: EntityViewSpace;
+  #viewspace: EntityViewSpace;
   #parent?: EntityView;
 
   get uuid() {
@@ -50,7 +50,7 @@ export class EntityView {
     const prevOrder = this.#order;
     this.#order = order ?? 0;
     if (prevOrder !== this.#order) {
-      this.#context.changeOrder(this);
+      this.#viewspace.changeOrder(this);
     }
   }
 
@@ -62,8 +62,8 @@ export class EntityView {
     this.#order = order;
     this.#namespace = namespace;
 
-    this.#context = EntityViewSpace.get(this.#namespace);
-    this.#context.addEntity(this);
+    this.#viewspace = EntityViewSpace.get(this.#namespace);
+    this.#viewspace.addEntity(this);
   }
 
   isChildOf(entity: EntityView) {
@@ -72,7 +72,7 @@ export class EntityView {
 
   removeFromParent() {
     if (this.#parent) {
-      this.#context.removeChildFromParent(this.uuid, this.#parent);
+      this.#viewspace.removeChildFromParent(this.uuid, this.#parent);
       this.#parent = undefined;
     }
   }
@@ -81,20 +81,20 @@ export class EntityView {
     if (!child.isChildOf(this)) {
       child.removeFromParent();
       child.#parent = this;
-      this.#context.addToChildren(this, child);
+      this.#viewspace.addToChildren(this, child);
     }
   }
 
   setProperty<T = unknown>(name: string, value: T, isEqual?: (a: T, b: T) => boolean) {
-    this.#context.setProperty(this, name, value, isEqual);
+    this.#viewspace.setProperty(this, name, value, isEqual);
   }
 
   removeProperty(name: string) {
-    this.#context.removeProperty(this, name);
+    this.#viewspace.removeProperty(this, name);
   }
 
   destroy() {
     this.removeFromParent();
-    this.#context.removeEntity(this);
+    this.#viewspace.removeEntity(this);
   }
 }

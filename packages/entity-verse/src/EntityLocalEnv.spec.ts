@@ -1,7 +1,7 @@
 import {EventizeApi} from '@spearwolf/eventize';
 import {Entity} from './Entity';
-import {EntityContext} from './EntityContext';
-import {EntityLocalContext} from './EntityLocalContext';
+import {EntityEnv} from './EntityEnv';
+import {EntityLocalEnv} from './EntityLocalEnv';
 import {EntityRegistry} from './EntityRegistry';
 import {EntityUplink} from './EntityUplink';
 import {EntityView} from './EntityView';
@@ -9,9 +9,9 @@ import {EntityViewSpace} from './EntityViewSpace';
 import {OnCreate, OnInit, OnRemoveFromParent} from './events';
 import {EntitiesSyncEvent, EntityChangeType} from './types';
 
-const nextSyncEvent = (link: EntityContext): Promise<EntitiesSyncEvent> =>
+const nextSyncEvent = (link: EntityEnv): Promise<EntitiesSyncEvent> =>
   new Promise((resolve) => {
-    link.once(EntityContext.OnSync, resolve);
+    link.once(EntityEnv.OnSync, resolve);
   });
 
 const waitForNext = (obj: EventizeApi, event: string | symbol): Promise<unknown[]> =>
@@ -19,7 +19,7 @@ const waitForNext = (obj: EventizeApi, event: string | symbol): Promise<unknown[
     obj.once(event, (...args: unknown[]) => resolve(args));
   });
 
-describe('EntityLocalContext', () => {
+describe('EntityLocalEnv', () => {
   const viewSpace = EntityViewSpace.get();
 
   afterAll(() => {
@@ -27,23 +27,23 @@ describe('EntityLocalContext', () => {
   });
 
   it('should be defined', () => {
-    expect(EntityLocalContext).toBeDefined();
+    expect(EntityLocalEnv).toBeDefined();
   });
 
   it('should start', async () => {
-    const localCtx = new EntityLocalContext();
+    const localEnv = new EntityLocalEnv();
 
-    expect(localCtx.isReady).toBe(false);
+    expect(localEnv.isReady).toBe(false);
 
-    localCtx.start();
+    localEnv.start();
 
-    expect(localCtx.isReady).toBe(true);
+    expect(localEnv.isReady).toBe(true);
 
-    await expect(localCtx.ready).resolves.toBe(localCtx);
+    await expect(localEnv.ready).resolves.toBe(localEnv);
   });
 
   it('should sync', async () => {
-    const localCtx = new EntityLocalContext().start();
+    const localEnv = new EntityLocalEnv().start();
 
     const a = new EntityView('a');
     const b = new EntityView('b', a);
@@ -51,9 +51,9 @@ describe('EntityLocalContext', () => {
     a.setProperty('foo', 'bar');
     b.setProperty('xyz', 123);
 
-    localCtx.sync();
+    localEnv.sync();
 
-    const event = await nextSyncEvent(localCtx);
+    const event = await nextSyncEvent(localEnv);
 
     expect(event.changeTrail).toEqual([
       {type: EntityChangeType.CreateEntity, token: 'a', uuid: a.uuid, properties: [['foo', 'bar']]},
@@ -62,7 +62,7 @@ describe('EntityLocalContext', () => {
   });
 
   it('should create entities within kernel', async () => {
-    const localCtx = new EntityLocalContext().start();
+    const localEnv = new EntityLocalEnv().start();
 
     const a = new EntityView('a');
     const b = new EntityView('b', a);
@@ -70,10 +70,10 @@ describe('EntityLocalContext', () => {
     a.setProperty('foo', 'bar');
     b.setProperty('xyz', 123);
 
-    await localCtx.sync();
+    await localEnv.sync();
 
-    const aa = localCtx.kernel.getEntity(a.uuid);
-    const bb = localCtx.kernel.getEntity(b.uuid);
+    const aa = localEnv.kernel.getEntity(a.uuid);
+    const bb = localEnv.kernel.getEntity(b.uuid);
 
     expect(aa).toBeDefined();
     expect(aa.getProperty('foo')).toBe('bar');
@@ -87,7 +87,7 @@ describe('EntityLocalContext', () => {
 
     const onRemoveFromParent = jest.fn();
 
-    @Entity({registry: localCtx.kernel.registry, token: 'c'})
+    @Entity({registry: localEnv.kernel.registry, token: 'c'})
     class EntityCcc implements OnRemoveFromParent {
       [OnRemoveFromParent](_uplink: EntityUplink) {
         onRemoveFromParent(this);
@@ -96,9 +96,9 @@ describe('EntityLocalContext', () => {
 
     const c = new EntityView('c', a, -1);
 
-    await localCtx.sync();
+    await localEnv.sync();
 
-    const cc = localCtx.kernel.getEntity(c.uuid);
+    const cc = localEnv.kernel.getEntity(c.uuid);
 
     expect(aa.children).toHaveLength(2);
     expect(aa.children[0]).toBe(cc);
@@ -110,7 +110,7 @@ describe('EntityLocalContext', () => {
 
     c.removeFromParent();
 
-    await localCtx.sync();
+    await localEnv.sync();
 
     expect(aa.children).toHaveLength(1);
     expect(cc.parent).toBeUndefined();
@@ -122,10 +122,10 @@ describe('EntityLocalContext', () => {
   });
 
   it('should create entity components', async () => {
-    const localCtx = new EntityLocalContext().start();
+    const localEnv = new EntityLocalEnv().start();
     const registry = new EntityRegistry();
 
-    localCtx.kernel.registry = registry;
+    localEnv.kernel.registry = registry;
 
     const onCreateMock = jest.fn();
     const onInitMock = jest.fn();
@@ -143,9 +143,9 @@ describe('EntityLocalContext', () => {
     const a = new EntityView('a');
     a.setProperty('foo', 'bar');
 
-    await localCtx.sync();
+    await localEnv.sync();
 
-    const aa = localCtx.kernel.getEntity(a.uuid);
+    const aa = localEnv.kernel.getEntity(a.uuid);
 
     expect(aa).toBeDefined();
     expect(aa.getProperty('foo')).toBe('bar');

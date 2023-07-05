@@ -3,11 +3,11 @@ import {EntityViewSpace} from './EntityViewSpace';
 import {EntitiesSyncEvent} from './types';
 
 /**
- * The base class for all _entity contexts_.
+ * The base class for all _entity environments_.
  *
- * An _entity context_ is responsible for synchronizing entities from a _view space_ with _entity components_ from a _kernel_.
+ * An _entity environment_ is responsible for synchronizing entities from a _view space_ with _entity components_ from a _kernel_.
  */
-export class EntityContext extends Eventize {
+export class EntityEnv extends Eventize {
   static OnSync = Symbol('onSync');
 
   #namespace: string | symbol;
@@ -16,14 +16,14 @@ export class EntityContext extends Eventize {
     return this.#namespace;
   }
 
-  get viewSpace(): EntityViewSpace {
+  get view(): EntityViewSpace {
     return EntityViewSpace.get(this.#namespace);
   }
 
-  #readyPromise: Promise<EntityContext>;
-  #readyResolve!: (value: EntityContext) => void;
+  #readyPromise: Promise<EntityEnv>;
+  #readyResolve!: (value: EntityEnv) => void;
 
-  get ready(): Promise<EntityContext> {
+  get ready(): Promise<EntityEnv> {
     return this.#readyPromise;
   }
 
@@ -40,7 +40,7 @@ export class EntityContext extends Eventize {
 
     this.#namespace = namespace ?? EntityViewSpace.GlobalNS;
 
-    this.#readyPromise = new Promise<EntityContext>((resolve) => {
+    this.#readyPromise = new Promise<EntityEnv>((resolve) => {
       this.#readyResolve = resolve;
     });
   }
@@ -50,14 +50,14 @@ export class EntityContext extends Eventize {
       if (!this.isReady) {
         this.#syncCallsBeforeReady++;
         if (this.#syncCallsBeforeReady > 1) {
-          return this.once(EntityContext.OnSync, Priority.Low, () => resolve());
+          return this.once(EntityEnv.OnSync, Priority.Low, () => resolve());
         }
       }
       this.ready.then(() => {
         const syncEvent: EntitiesSyncEvent = {
-          changeTrail: this.viewSpace.buildChangeTrails(),
+          changeTrail: this.view.buildChangeTrails(),
         };
-        this.emit(EntityContext.OnSync, syncEvent);
+        this.emit(EntityEnv.OnSync, syncEvent);
         resolve();
       });
     });

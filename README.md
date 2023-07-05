@@ -13,11 +13,11 @@ the architecture of entity-verse is centered around four main sections:
    - [x] _javascript api_: bring your own framework: html, react, angular .. it's up to you
    - [ ] ready to use _web components api_
    - [ ] ready to use _react api_
-3. [ ] create a _entity context_ with an _entity kernel_
-   - [ ] a worker context: all entities are living in a worker thread 
-   - [x] a direct/ main document context
+3. [ ] create a _entity environment_ with an _kernel_
+   - [ ] a worker env: all entities are living in a worker thread 
+   - [x] a local env (runs on the browser main thread)
    - [x] but don't forget to _sync_ the states
-4. [ ] kernel entity routing
+4. [ ] kernel entity/token routing
    - [x] an entity is not an entity component, but an entity can consists of multiple components
    - [x] entity component object creation based on _tokens_
 
@@ -29,7 +29,7 @@ the architecture of entity-verse is centered around four main sections:
 an _entity component_ has the following properties:
 - there are any number of input properties, aka `InProp`'s
 - components can react to events and can trigger events themselves
-- entity components have a _context_: components have a parent-child relationship to each other and thus live in a classical tree-like hierarchy
+- entity components have a _environment_: components have a parent-child relationship to each other and thus live in a classical tree-like hierarchy
   - a compoennt can be assigned to a parent component (but does not have to)
   - a component can have one, none or multiple child components
 - all _in-props_ and _context_ accessors are __signals__ (using [spearwolf/signalize](https://github.com/spearwolf/signalize))

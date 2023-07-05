@@ -11,7 +11,7 @@ interface ViewInstance {
 
 declare global {
   // eslint-disable-next-line no-var
-  var __entityProxyContext: Map<string | symbol, EntityViewSpace> | undefined;
+  var __entityViewSpace: Map<string | symbol, EntityViewSpace> | undefined;
 }
 
 /**
@@ -23,15 +23,15 @@ export class EntityViewSpace {
   static GlobalNS = Symbol.for('globalEntities');
 
   static get(namespace?: string | symbol): EntityViewSpace {
-    if (globalThis.__entityProxyContext === undefined) {
-      globalThis.__entityProxyContext = new Map<string | symbol, EntityViewSpace>();
+    if (globalThis.__entityViewSpace === undefined) {
+      globalThis.__entityViewSpace = new Map<string | symbol, EntityViewSpace>();
     }
     const ns = namespace ?? EntityViewSpace.GlobalNS;
-    if (globalThis.__entityProxyContext.has(ns)) {
-      return globalThis.__entityProxyContext.get(ns)!;
+    if (globalThis.__entityViewSpace.has(ns)) {
+      return globalThis.__entityViewSpace.get(ns)!;
     } else {
       const ctx = new EntityViewSpace();
-      globalThis.__entityProxyContext.set(ns, ctx);
+      globalThis.__entityViewSpace.set(ns, ctx);
       return ctx;
     }
   }
@@ -145,11 +145,11 @@ export class EntityViewSpace {
     this.#rootEntities.slice(0).forEach((uuid) => this.removeEntitySubTree(uuid));
 
     if (this.#rootEntities.length !== 0) {
-      throw new Error('entity-proxy-context clear panic: rootEntities is not empty!');
+      throw new Error('entity-view-space clear panic: rootEntities is not empty!');
     }
 
     if (this.#entities.size !== 0) {
-      throw new Error('entity-proxy-context clear panic: entities is not empty!');
+      throw new Error('entity-view-space clear panic: entities is not empty!');
     }
   }
 
