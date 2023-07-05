@@ -14,6 +14,11 @@ declare global {
   var __entityProxyContext: Map<string | symbol, EntityViewSpace> | undefined;
 }
 
+/**
+ * The `EntityViewSpace` is a container for all _entity view objects_ in a specific namespace.
+ *
+ * If no namespace is specified when creating an `EntityView`, the `EntityView` is packed into the global namespace.
+ */
 export class EntityViewSpace {
   static GlobalNS = Symbol.for('globalEntities');
 
