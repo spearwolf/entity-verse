@@ -2,7 +2,11 @@
 
 > An entity is more a concept than a concrete thing.
 
-![an-entity](./images/what-is-an-entity.png)
+<p align="center">
+  <img width="50%" src="images/what-is-an-entity.png">
+  <br>
+  <em>an entity has an uplink and components linked to it</em>
+</p>
 
 An entity ..
 
