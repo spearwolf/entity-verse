@@ -1,5 +1,6 @@
 import {EntityEnv} from './EntityEnv';
 import {EntityKernel} from './EntityKernel';
+import {EntityRegistry} from './EntityRegistry';
 import {EntitiesSyncEvent, EntityChangeEntryType} from './types';
 
 const hasStructuredClone = typeof structuredClone === 'function' ? true : false;
@@ -13,19 +14,29 @@ const checkStructuredClone = () => {
   return hasStructuredClone;
 };
 
+export interface EntityLocalEnvParams {
+  namespace?: string | symbol;
+  registry?: EntityRegistry;
+  useStructuredClone?: boolean;
+}
+
 /**
  * An _entity environment_ that runs within the same process as the _entity view objects_.
  * (which in most cases should be the main/local thread of the active browser window/tab)
  *
- * To avoid unexpected side effects, all data that is synchronized is cloned using `structuredClone()` by default.
+ * To avoid unexpected side effects, all data that is synchronized is cloned using `structuredClone()` by default
+ * (this behavior can of course also be deactivated).
  */
 export class EntityLocalEnv extends EntityEnv {
-  readonly kernel = new EntityKernel();
+  readonly kernel: EntityKernel;
 
   useStructuredClone = true;
 
-  constructor(namespace?: string | symbol) {
-    super(namespace);
+  constructor(options?: EntityLocalEnvParams) {
+    super(options?.namespace);
+
+    this.kernel = new EntityKernel(options?.registry);
+    this.useStructuredClone = options?.useStructuredClone ?? true;
 
     this.on(EntityEnv.OnSync, (event: EntitiesSyncEvent) => this.kernel.run(event));
   }

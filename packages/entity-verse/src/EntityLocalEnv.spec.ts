@@ -2,12 +2,12 @@ import {EventizeApi} from '@spearwolf/eventize';
 import {Entity} from './Entity';
 import {EntityEnv} from './EntityEnv';
 import {EntityLocalEnv} from './EntityLocalEnv';
-import {EntityRegistry} from './EntityRegistry';
 import {EntityUplink} from './EntityUplink';
 import {EntityView} from './EntityView';
 import {EntityViewSpace} from './EntityViewSpace';
 import {OnCreate, OnInit, OnRemoveFromParent} from './events';
 import {EntitiesSyncEvent, EntityChangeType} from './types';
+import {getDefaultRegistry} from './EntityRegistry';
 
 const nextSyncEvent = (link: EntityEnv): Promise<EntitiesSyncEvent> =>
   new Promise((resolve) => {
@@ -20,10 +20,9 @@ const waitForNext = (obj: EventizeApi, event: string | symbol): Promise<unknown[
   });
 
 describe('EntityLocalEnv', () => {
-  const viewSpace = EntityViewSpace.get();
-
   afterAll(() => {
-    viewSpace.clear();
+    EntityViewSpace.get().clear();
+    getDefaultRegistry().clear();
   });
 
   it('should be defined', () => {
@@ -87,7 +86,7 @@ describe('EntityLocalEnv', () => {
 
     const onRemoveFromParent = jest.fn();
 
-    @Entity({registry: localEnv.kernel.registry, token: 'c'})
+    @Entity({token: 'c'})
     class EntityCcc implements OnRemoveFromParent {
       [OnRemoveFromParent](_uplink: EntityUplink) {
         onRemoveFromParent(this);
@@ -123,14 +122,11 @@ describe('EntityLocalEnv', () => {
 
   it('should create entity components', async () => {
     const localEnv = new EntityLocalEnv().start();
-    const registry = new EntityRegistry();
-
-    localEnv.kernel.registry = registry;
 
     const onCreateMock = jest.fn();
     const onInitMock = jest.fn();
 
-    @Entity({registry, token: 'a'})
+    @Entity({token: 'a'})
     class Aaa implements OnCreate, OnInit {
       [OnCreate](uplink: EntityUplink) {
         onCreateMock(uplink, this);
