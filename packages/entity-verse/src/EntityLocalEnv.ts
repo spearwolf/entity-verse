@@ -16,6 +16,8 @@ const checkStructuredClone = () => {
 /**
  * An _entity environment_ that runs within the same process as the _entity view objects_.
  * (which in most cases should be the main/local thread of the active browser window/tab)
+ *
+ * To avoid unexpected side effects, all data that is synchronized is cloned using `structuredClone()` by default.
  */
 export class EntityLocalEnv extends EntityEnv {
   readonly kernel = new EntityKernel();
