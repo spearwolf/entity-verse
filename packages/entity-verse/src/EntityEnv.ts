@@ -1,6 +1,6 @@
 import {Eventize, Priority} from '@spearwolf/eventize';
 import {EntityViewSpace} from './EntityViewSpace';
-import {EntitiesSyncEvent} from './types';
+import {EntitiesSyncEvent, EntityChangeEntryType} from './types';
 
 /**
  * The base class for all _entity environments_.
@@ -55,7 +55,7 @@ export class EntityEnv extends Eventize {
       }
       this.ready.then(() => {
         const syncEvent: EntitiesSyncEvent = {
-          changeTrail: this.view.buildChangeTrails(),
+          changeTrail: this.getChangeTrail(),
         };
         this.emit(EntityEnv.OnSync, syncEvent);
         resolve();
@@ -66,5 +66,9 @@ export class EntityEnv extends Eventize {
   protected start() {
     this.#isReady = true;
     this.#readyResolve(this);
+  }
+
+  protected getChangeTrail(): EntityChangeEntryType[] {
+    return this.view.buildChangeTrails();
   }
 }
