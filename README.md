@@ -6,7 +6,7 @@ __Relocate your *workload intensive* components into web worker and communicate 
 
 :warning: Attention!  The following content is more a sketch of ideas and tries to explore the vision of this framework. But by no means is this documentation complete or does it reflect the state of the implementation (for that you should better have a look at the test specs).
 
-## Overview
+## Overview 👀
 
 the architecture of entity-verse is centered around four main sections:
 
@@ -15,17 +15,17 @@ the architecture of entity-verse is centered around four main sections:
    - [x] _javascript api_: bring your own framework: html, react, angular .. it's up to you
    - [ ] ready to use _web components api_
    - [ ] ready to use _react api_
-3. [ ] create an _entity environment_ with a _kernel_
+3. [ ] create an _entity component environment_ with a _kernel_
    - [ ] a worker env: all entities are living in a worker thread 
    - [x] a local env (runs on the browser main thread)
    - [x] but don't forget to _sync_ !
-4. [ ] kernel entity/token routing
+4. [ ] kernel entity component &larr; token routing
    - [x] an entity is not an entity component, but an entity can consists of multiple components
    - [x] entity component object creation based on a _registry_ and _tokens_
 
-[👉 for a detailed description of what an entity is, see here](./docs/Entity.md)
+[🔎 for a detailed description of what an entity is, see here](./docs/Entity.md)
 
-### Entity Components
+### 📖 Entity Components
 
 **entity-verse** provides the user with a decorator based api that can be used to create _entity components_.
 an _entity component_ has the following properties:
@@ -40,7 +40,7 @@ an _entity component_ has the following properties:
 
 ![an entity component](./docs/images/an-entity-component.png)
 
-### Entity View
+### 📖 Entity View
 
 In order to use these entities, the user must create a _view instance_ for each entity. These frontends act as remote controllers for the actual entity.
 
