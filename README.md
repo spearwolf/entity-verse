@@ -1,5 +1,7 @@
 # @spearwolf/entity-verse
 
+__Relocate your *workload intensive* components into web worker and communicate with them in your main thread by *hierarchical view entities*❗__
+
 > a ~~framework~~ metaverse for your entities :rocket:
 
 :warning: Attention!  The following content is more a sketch of ideas and tries to explore the vision of this framework. But by no means is this documentation complete or does it reflect the state of the implementation (for that you should better have a look at the test specs).
